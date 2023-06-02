@@ -6,6 +6,25 @@ Princess: Coding like royalty
    Not everything mentioned in this documentation is already implemented.
    The syntax might change at any point, proceed with caution!
 
+Features
+~~~~~~~~
+ * Familar and logical syntax
+ * Statically typed with structural typing
+ * Run any code at compile time
+ * Support for automatic memory management with references
+ * Copy constructors and destructors
+ * Operator overloading
+ * Polymorphic functions and types
+ * Uniform function call syntax
+ * Cleanup using defer
+ * Implicit converter functions
+ * Full runtime and compile time reflection
+ * FFI and interop with C, Access to the C standard library
+ * Debug symbols with GDB
+ * LLVM as Backend
+ * Incremental compilation (WIP)
+ * VSCode extension with autocompletion (WIP)
+
 .. code:: princess
 
    let i = 7
@@ -41,8 +60,11 @@ Princess: Coding like royalty
 
 .. toctree::
    :maxdepth: 2
-
+   
    VSCode Extension <https://github.com/Princess-org/vscode-Princess>
+   Download <https://github.com/Princess-org/Princess/releases>
+
+   syntax
 
 .. 
    * :ref:`genindex`
