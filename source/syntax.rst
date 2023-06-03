@@ -133,6 +133,7 @@ on pointer types while also keeping pointer arithmetic.
 
 The precedence of the binary operators is as follows:
 
+.. _precedence:
 .. csv-table:: 
     :escape: #
 

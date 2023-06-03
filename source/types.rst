@@ -14,7 +14,7 @@ Type definitions in the Princess language may be aliased as follows:
     // it will not yield the expected result 
     // as no structure would implement said type
 
-Numeric Types
+Numeric types
 ~~~~~~~~~~~~~
 
 Predefined platform dependant numeric types are as follows:
@@ -185,6 +185,17 @@ A union occupies the size of the largest member. While in C it is
 not allowed to write to one member and read from another, this is perfectly
 valid in Princess. It is up to you to find a good use for that though.
 
+You can create instances of structs by using a cast like this:
+
+.. code-block:: princess
+    
+    type MyStruct { a: int; b: double }
+
+    let s = { a = 10, b = 10.5 } !MyStruct
+    let s2 = { 10, 10.5 } !MyStruct
+
+Do note that the rules are essentially the same as for a function call.
+
 Enum types
 ~~~~~~~~~~
 
@@ -270,6 +281,8 @@ References may also have no type, in this case use `&` to create a void referenc
 
     // This gets automatically cleaned up
     let a = { 10 } !&A
+
+.. _interfaces:
 
 Interfaces
 ~~~~~~~~~~
@@ -420,3 +433,35 @@ closure and a normal function.
 
     a()
     assert b() == 20
+
+Ranges
+~~~~~~
+
+Ranges are defined using the Syntax ``x..y`` or ``x..=y`` where the first one means
+everything from x to y - 1 and the other one includes y.
+
+Do note that ranges are only valid inside of ``for`` loops and ``switch`` statements,
+this is likely going to change in the future.
+
+Generic Types
+~~~~~~~~~~~~~
+
+A type may be made generic by giving the ``type`` declaration parameters:
+
+.. code-block:: princess
+
+    type Container(type T) = struct {
+    	v: T
+    }
+
+    let c = { 10 } !Container(int)
+
+You may accept a generic type as a parameter by either referring to the whole name
+or by using ``type`` parameters to accept any polymorphic type. Do note that a function
+like this is also made polymorphic:
+
+.. code-block:: princess
+
+    def retrieve_value(c: Container(type T)) -> T {
+        return c.v
+    }

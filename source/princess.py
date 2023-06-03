@@ -19,7 +19,7 @@ class PrincessLexer(RegexLexer):
              r'int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|double|float32|float64|size_t|string)\b', Keyword.Type),
             (r'\b(import)\b(\s*)', bygroups(Keyword.Namespace, Whitespace), 'import'),
             (r'(assert|break|case|continue|in|else|loop|for|yield|defer|as|'
-             r'if|go_to|return|switch|while|export|var|let|def|type|weak_ref)\b', Keyword),
+             r'if|go_to|return|switch|while|export|var|let|def|type|weak_ref|implicit|from)\b', Keyword),
             (r'(import)\b(def|var|const)\b', bygroups(Keyword, Keyword.Declaration)),
             (r'(true|false|null)\b', Keyword.Constant),
             (r'(struct|interface|enum|const)\b', Keyword.Declaration),
@@ -36,7 +36,7 @@ class PrincessLexer(RegexLexer):
             (r'0[bB][01][01_]*[lL]?', Number.Bin),
             (r'0[0-7_]+[lL]?', Number.Oct),
             (r'0|[1-9][0-9_]*[lL]?', Number.Integer),
-            (r'[~^*!%&\[\]<>|+=/?-@]', Operator),
+            (r'[~^*!%&\[\]<>|+=/?\-@]', Operator),
             (r'->', Operator),
             (r'[{}();:.,]', Punctuation),
             (r'[^\S\n]+', Whitespace)

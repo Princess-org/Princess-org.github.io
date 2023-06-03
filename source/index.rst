@@ -73,8 +73,11 @@ Index
    VSCode Extension <https://github.com/Princess-org/vscode-Princess>
    Download <https://github.com/Princess-org/Princess/releases>
 
+   usage
    syntax
    types
+   expressions
+   modules
 
 .. 
    * :ref:`genindex`
