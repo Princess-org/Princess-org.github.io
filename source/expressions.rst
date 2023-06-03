@@ -171,6 +171,24 @@ A for loop might go over a range, or the values in a generator.
     }
     print("\n")
 
+Assert
+~~~~~~
+
+Assert is basically a way to make sure that a condition is true, and abort
+in the case of failure. This is to make sure that the program is in a safe state,
+and not to return errors to the user of your program. When an assertion is failing,
+it is printing the message specified and a stack trace. Do note that assertions
+behave a bit differently inside of tests, see the section on :ref:`this <tests>` for more information.
+
+.. code-block:: princess
+
+    // This simply fails (unreachable code)
+    assert
+    // This fails if the condition is met
+    assert 1 + 5 == 6
+    // This also prints a message
+    assert 10 == 20, "This fails"
+
 Functions
 ~~~~~~~~~
 
@@ -392,6 +410,8 @@ text that has been printed prior to the first call.
 
         assert env.out() == "Hello World"
     } 
+
+.. _tests: 
 
 ``assert`` statements will evaluate and call ``env.assertion_handler`` instead of aborting
 the program outright.
