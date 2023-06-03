@@ -6,6 +6,13 @@ Princess: Coding like royalty
    Not everything mentioned in this documentation is already implemented.
    The syntax might change at any point, proceed with caution!
 
+Do note that this documentation will not explain what an if statement or a for loop is,
+some basic knowledge on programming is expected.
+
+The standard library in Princess is essentially implemented in such a way that it
+was possible to write the compiler in it. If you want to contribute by adding more useful
+functions please go ahead and do so!
+
 Features
 ~~~~~~~~
  * Familar and logical syntax
@@ -58,13 +65,16 @@ Features
 
    assert my_size_of(Person) == 32
 
+Index
+~~~~~
 .. toctree::
    :maxdepth: 2
-   
+
    VSCode Extension <https://github.com/Princess-org/vscode-Princess>
    Download <https://github.com/Princess-org/Princess/releases>
 
    syntax
+   types
 
 .. 
    * :ref:`genindex`

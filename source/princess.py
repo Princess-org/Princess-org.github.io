@@ -14,8 +14,9 @@ class PrincessLexer(RegexLexer):
             (r'"', String, 'string'),
             (r"'\\.'|'[^\\]'|'\\u[0-9a-fA-F]{4}'", String.Char),
             (r'(\.)((?:[^\W\d]|\$)[\w$]*)', bygroups(Punctuation, Name.Attribute)),
-            (r'unsigned|word|bool|char|byte|short|int|long|ubyte|ushort|uint|ulong|'
-             r'int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|double|float32|float64|size_t|string', Keyword.Type),
+            (r'#\w*', Keyword),
+            (r'(unsigned|word|bool|char|byte|short|int|long|ubyte|ushort|uint|ulong|'
+             r'int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|double|float32|float64|size_t|string)\b', Keyword.Type),
             (r'\b(import)\b(\s*)', bygroups(Keyword.Namespace, Whitespace), 'import'),
             (r'(assert|break|case|continue|in|else|loop|for|yield|defer|as|'
              r'if|go_to|return|switch|while|export|var|let|def|type|weak_ref)\b', Keyword),
@@ -35,7 +36,8 @@ class PrincessLexer(RegexLexer):
             (r'0[bB][01][01_]*[lL]?', Number.Bin),
             (r'0[0-7_]+[lL]?', Number.Oct),
             (r'0|[1-9][0-9_]*[lL]?', Number.Integer),
-            (r'[~^*!%&\[\]<>|+=/?-]', Operator),
+            (r'[~^*!%&\[\]<>|+=/?-@]', Operator),
+            (r'->', Operator),
             (r'[{}();:.,]', Punctuation),
             (r'[^\S\n]+', Whitespace)
         ],
