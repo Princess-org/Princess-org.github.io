@@ -532,3 +532,25 @@ as the only argument.
     export def destruct(this: *MyStruct) {
         free(this.ptr)
     }
+
+Defer
+~~~~~
+
+A defer statement is essentially run at the end of a function.
+It works similar to Go, where the defers are added to a list and
+worked through in reverse order in which they were encountered.
+
+This can be useful to make sure that a resource is correctly freed,
+without having to do such at the end of the function. This way the initialization
+and destruction can happen in the exact same place.
+
+.. code-block:: princess
+
+    def read_file {
+        let fp = open("My file.txt", "r")
+        defer close(fp)
+
+        print(read_all(fp))
+        // The defer happens here
+    }
+    read_file
