@@ -685,16 +685,16 @@ Types
         key: K
         value: V
         next: &Entry(K, V)
-        l_prev: WeakRefT
-        l_next: WeakRefT
+        l_prev: weak_ref(Entry(K, V))
+        l_next: weak_ref(Entry(K, V))
     }
 .. code-block:: princess
 
     type Map(type K, type V) = struct {
         size: size_t
         entries: [&Entry(K, V)]
-        tail: WeakRefT
-        head: WeakRefT
+        tail: weak_ref(Entry(K, V))
+        head: weak_ref(Entry(K, V))
     }
 .. code-block:: princess
 

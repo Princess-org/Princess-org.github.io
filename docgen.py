@@ -76,6 +76,11 @@ def type_to_str(value):
             tpe = type_to_str(value["tpe"])
         else: tpe = None
         return "&" + tpe if tpe else ""
+    elif value["kind"] == "WeakRefT":
+        if value["tpe"]:
+            tpe = type_to_str(value["tpe"])
+        else: tpe = None
+        return "weak_ref(" + (tpe if tpe else "") + ")"
     elif value["kind"] == "ArrayT":
         return "[" + type_to_str(value["tpe"]) + "]"
     elif value["kind"] == "TypeConstructor":
