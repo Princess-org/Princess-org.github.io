@@ -69,6 +69,7 @@ Index
 ~~~~~
 .. toctree::
    :maxdepth: 2
+   :glob:
 
    VSCode Extension <https://github.com/Princess-org/vscode-Princess>
    Download <https://github.com/Princess-org/Princess/releases>
@@ -78,6 +79,7 @@ Index
    types
    expressions
    modules
+   stdlib
 
 .. 
    * :ref:`genindex`
