@@ -18,7 +18,7 @@ class PrincessLexer(RegexLexer):
             (r'(unsigned|word|bool|char|byte|short|int|long|ubyte|ushort|uint|ulong|'
              r'int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|double|float32|float64|size_t|string)\b', Keyword.Type),
             (r'\b(import)\b(\s*)', bygroups(Keyword.Namespace, Whitespace), 'import'),
-            (r'(assert|break|case|continue|in|else|loop|for|yield|defer|as|'
+            (r'(assert|break|case|continue|in|else|loop|for|yield|defer|as|size_of|align_of|type_of|defined|'
              r'if|go_to|return|switch|while|export|var|let|def|type|weak_ref|implicit|from)\b', Keyword),
             (r'(import)\b(def|var|const)\b', bygroups(Keyword, Keyword.Declaration)),
             (r'(true|false|null)\b', Keyword.Constant),

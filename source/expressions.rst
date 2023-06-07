@@ -554,3 +554,51 @@ and destruction can happen in the exact same place.
         // The defer happens here
     }
     read_file
+
+Sizeof and Alignof
+~~~~~~~~~~~~~~~~~~
+
+The two keywords ``size_of`` and ``align_of`` return the size of a type and the
+alignment of a type respectively. These might be removed in the future as it
+is possible to get both by using reflection in the form of ``type.size`` and ``type.align``.
+
+.. code-block:: princess
+
+    type S = struct { 
+        a: int 
+        b: int 
+    }
+
+    assert (size_of S) == 8
+    assert S.size == 8
+
+    assert (align_of S) == 4
+    assert S.align == 4
+
+Typeof
+~~~~~~
+
+The ``type_of`` keyword returns the type of an expression.
+This can be useful for generic programming.
+
+.. code-block:: princess
+
+    assert (type_of 10 + 20) == int
+
+Defined
+~~~~~~~
+
+Use ``defined`` to check if an identifier exists. You can use this
+together with typed function identifiers to check if a function for
+a specific type exists. 
+
+It's also useful to check for windows or linux as the identifiers 
+for each are only defined on the respective platforms.
+ 
+.. code-block:: princess
+
+    #if defined WIN32 {
+        #if defined special_function::(int, int) {
+            special_function(10, 20)
+        }
+    }
