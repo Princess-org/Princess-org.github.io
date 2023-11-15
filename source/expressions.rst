@@ -70,7 +70,7 @@ If statements
 ~~~~~~~~~~~~~
 
 The if statements in Princess work just like in any other programming language.
-You do *not* need parenthesis around the condition. Howveer,
+You do *not* need parenthesis around the condition. However,
 every if statement needs to be followed by ``{}``.
 
 .. code-block:: princess
