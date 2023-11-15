@@ -4,7 +4,7 @@ Usage
 In order to use Princess you can either download the package from
 Github or check out the repository and build it yourself.
 
-Do note that llvm-13 is required for the compiler to run.
+Currentl llvm-13 is required for the compiler to run.
 It is expected to find the compiler on the path, so you need
 to hook it up like that. On Windows it calls ``clang`` and on
 linux ``clang-13``. Make sure that it is supplied via the PATH.
@@ -54,6 +54,6 @@ arguments supplied.
 
 .. warning:: 
     Do note that the default mode of the compiler is incremental compilation.
-    This can speed up compilation significantly for big projects, but do note that it 
+    This can speed up compilation significantly for big projects, but it might 
     fails sometimes. If the compiler segfaults, try compiling with \--no-incremental first
     before submitting a bug report.

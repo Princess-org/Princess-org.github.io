@@ -29,7 +29,7 @@ Identifiers
 Identifiers can be defined according to the regex:
 ``[A-za-z_][A-za-z0-9_]*``
 
-Do note that the identifier ``_`` behaves in a special way,
+The identifier ``_`` behaves in a special way,
 this is explained in the section about variables.
 
 String Literals
@@ -56,11 +56,12 @@ The following escape sequences are allowed inside of string literals:
     ``\UFFFFFFFF``, Unicode character in the full range of unicode
     
 Additionally triple quoted strings may be used that span over multiple lines.
-Do note that all whitespace contained in these strings is encoded.
+All whitespace contained in these strings is encoded.
 
 Character literals are enclosed with single quotes. The same escape sequences
-are allowed for characters (except for the two unicode escape sequences). Do note
-that a char is defined as a single byte, and not a unicode character.
+are allowed for characters (except for the two unicode escape sequences).
+A char is defined as a single byte, and not a unicode character. Functions
+that deal with unicode and iterating over glyphs will be provided in the future.
 
 Numeric Literals
 ~~~~~~~~~~~~~~~~

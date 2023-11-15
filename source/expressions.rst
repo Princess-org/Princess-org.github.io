@@ -60,7 +60,7 @@ It looks like this:
     let a: double = 20.5
     let b = a !int
 
-Do note that sometimes there might be data loss. 
+Be careful, sometimes there might be data loss! 
 
 If you want to convert the bit pattern, then you have to use pointers. 
 Unlike in C, an operation like this is not undefined behavior, 
@@ -70,7 +70,7 @@ If statements
 ~~~~~~~~~~~~~
 
 The if statements in Princess work just like in any other programming language.
-Do note that you do *not* need parenthesis around the condition. Do note that
+You do *not* need parenthesis around the condition. Howveer,
 every if statement needs to be followed by ``{}``.
 
 .. code-block:: princess
@@ -100,7 +100,7 @@ Static ifs work just like normal if statements, except that the expression gets 
 at compile time. This means that the body of the if statement is getting substituted
 in the constant evaluation stage. Only the parser needs to be happy about
 the contents, and the branches that are cut out don't get typechecked.
-Do note that an ``#if`` statement doesn't create a new scope but instead everything inside
+An ``#if`` statement doesn't create a new scope but instead everything inside
 is of the parent scope. That means variables defined inside of it are visible from outside.
 
 .. code-block:: princess
@@ -117,7 +117,8 @@ Switch statement
 The switch statement currently only works for integral types and enums.
 Unlike in C, there is no fallthrough. You can specify multiple
 values in a single case, or use ranges to match multiple values.
-Do note that the case labels need to be compile time constants.
+Case labels need to be compile time constants at the moment.
+This will change as soon as pattern matching becomes a thing.
 
 There might optionally be one case label without arguments, 
 which is called when none of the other cases match.
@@ -177,7 +178,7 @@ Assert
 Assert is basically a way to make sure that a condition is true, and abort
 in the case of failure. This is to make sure that the program is in a safe state,
 and not to return errors to the user of your program. When an assertion is failing,
-it is printing the message specified and a stack trace. Do note that assertions
+it is printing the message specified and a stack trace. Assertions
 behave a bit differently inside of tests, see the section on :ref:`this <tests>` for more information.
 
 .. code-block:: princess
@@ -194,7 +195,7 @@ Functions
 
 Functions may be defined at top level with the keyword `def` like this:
 The arguments are specified in parenthesis after the function name and
-are of the form "name": "type". Do note that the types need to be defined
+are of the form "name": "type". The types need to be defined
 here and can't be inferred like for variables. 
 
 The return type is optionally
@@ -210,7 +211,7 @@ defined by using an arrow followed by one or more return types.
         return 10
     }
 
-Do note that functions may be defined in any order, so this is perfectly valid:
+Functions may be defined in any order, so this is perfectly valid:
 
 .. code-block:: princess 
 
@@ -224,7 +225,7 @@ Note however that this does not apply to compile time code. Inside of a const or
 a function that is called at compile time, the function may only refer to code that
 has already been defined. This might not be a problem if you import a module as
 everything in there has been defined already, but watch out if using compile time code
-in the same module.
+in the same module. *This restriction is subject to change in the future.*
 
 You might mark a function with ``implicit``. When trying to convert from a type A into a type B
 it is going to search for an implicit function that is imported into the current scope.
@@ -254,7 +255,7 @@ is only useful when calling to C as there is no way to read out the arguments wh
 in that way. The second form passes an array of type ``[int]`` in this case. The function may
 also be called with an array as the last argument, which does pass the array as varargs.
 
-.. warning:: Do note that the array gets cleaned up by the calling function after
+.. warning:: The arguments array gets cleaned up by the calling function after
     calling your function, so you need to copy it if you plan 
     to store it in a global variable.
 
@@ -309,8 +310,8 @@ specific type like so:
 
 This essentially means, that a type is provided to the function at compile time. So multiple
 versions of this function get created if different types get specified here.
-Do note that ``A`` is only valid after its creation, so you can not refer to the type ``A``
-from an argument that is prior to the type argument.
+``A`` is only valid after its creation, so you can not refer to the type ``A``
+from an argument that is defined prior to the type argument.
 
 There is also a way to accept arguments of a type directly like so:
 
@@ -338,9 +339,9 @@ A function may refer to an overloaded operator if it is using that operator as a
 These functions get converted to have a different name in the final output and can be
 referenced as that.
 
-Do note that neither pointer arithmetic nor the ``and``, ``or`` or the ``.`` operator
+Neither pointer arithmetic nor the ``and``, ``or`` or the ``.`` operator
 can be overloaded. Additionally, the reference ``*`` and dereference ``@`` operators
-may not be overloaded either.
+may not be overloaded either. *This might change in the future.*
 
 ``::`` also looks like an operator but it is actually part of an
 identifier.
@@ -480,7 +481,7 @@ Function calls
 ~~~~~~~~~~~~~~
 
 Function calls in Princess are the function name followed by an open parenthesis and a
-closing parenthesis. Do note that functions with zero arguments may be called without
+closing parenthesis. Functions with zero arguments may be called without
 the parenthesis. This means that if you want to take a reference of a function, you
 need to use the address of ``*`` operator.
 
@@ -497,13 +498,13 @@ is not fixed, you may call them in any order.
 Constructors and Destructors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Do note that there are two extra magic methods in Princess to
-support RAII and valid copying. Do note that both of these functions
+There are two extra magic methods in Princess to
+support RAII and valid copying. Both of these functions
 must be marked ``export``
 
 The first is the copy constructor. This gets called whenver a value is copied.
 It receives a pointer to the new object as the first argument and a pointer to your object 
-as the second argument. Do note that if a copy constructor is defined, 
+as the second argument. If a copy constructor is defined, 
 the object's data is not getting cloned, you have to do that yourself!
 
 The second special function is the destructor. It gets called whenver your object
