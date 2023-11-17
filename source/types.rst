@@ -55,7 +55,7 @@ as follows:
     type int256 = word(265)
     type uint256 = unsigned word(265)
 
-Do note that integer literals are 64 bit, so you probably need bit shifts to initialize these.
+Integer literals are at maximum 64 bit, so you probably need bit shifts to initialize these.
 
 Boolean type
 ~~~~~~~~~~~~
@@ -90,7 +90,7 @@ A string literal is zero terminated. You can access a String's length with the `
 
 In the standard library (strings.pr), there are several additional String types. The interface ``String``
 is what should be used if a string is used as a parameter. This is because the other String types implement
-that interface. Do note that while regular ``[char]`` is mutable, the ``String`` interface
+that interface. While a regular ``[char]`` is mutable, the ``String`` interface
 does not define a mutator function. There is an implicit function that converts a regular ``[char]`` to that type. Do note
 that the result of that conversion is a ``StringSlice`` which points at the original ``[char]``'s data.
 This means that no copy is made and that if the original is freed, the slice becomes invalid.
@@ -168,7 +168,7 @@ A structure type is defined as follows:
         }
     }
 
-Do note that all fields of a structure are accessable from outside
+All fields of a structure are accessable from outside
 of the current module, there is no notion of private fields.
 
 Unions are a special type of struct where each element occupies
@@ -194,7 +194,7 @@ You can create instances of structs by using a cast like this:
     let s = { a = 10, b = 10.5 } !MyStruct
     let s2 = { 10, 10.5 } !MyStruct
 
-Do note that the rules are essentially the same as for a function call.
+The rules are essentially the same as for a function call.
 
 Enum types
 ~~~~~~~~~~
@@ -324,7 +324,7 @@ similar to concepts in C++.
     // Foo
     // 20
 
-Do note that in this case, no operation is performed at runtime, instead the polymorphic function print gets
+In this case, no operation is performed at runtime, instead the polymorphic function print gets
 compiled into two separate instances, one accepting ``ìnt`` and the other one accepting ``A``.
 
 The second ways to use interfaces is to use a reference of that interface. This allows for dynamic
@@ -378,11 +378,11 @@ variable. For that use the ``?`` instead of the number of elements.
 
     let a: [?; int] = [1, 2, 3, 4, 5, 6]
 
-Do note that these arrays are copied by value when passed to a function.
+These arrays are copied by value when passed to a function.
 
 The second kind of arrays are dynamic arrays. These do not specify a size, but instead contain
 a reference to a block of memory. This means the contents of these arrays are not copied when
-passed to a function. Do note that these arrays necessarily have to be freed with ``delete(arr)``,
+passed to a function. These arrays necessarily have to be freed with ``delete(arr)``,
 when they are created with ``allocate(T, size)`` or ``zero_allocate(T, size)``.
 
 You can however pass a static array in place of a dynamic array. These do refer to the static
@@ -407,7 +407,7 @@ Function types
 
 You can take the address of any function with ``*``. The type of plain functions looks like this:
 ``def (A, B) -> (C, D)``. This function takes types A and B as arguments and returns C and D.
-Do note that you can leave out the parenthesis if it is one type or drop them entirely if there's no type.
+You can leave out the parenthesis if it is one type or drop them entirely if there's no type.
 
 There is a second function type, the closure type, which is the same just without the def:
 ``(A, B) -> (C, D)``. This is the type that closures have. Dot not use the address operator to refer
@@ -440,7 +440,7 @@ Ranges
 Ranges are defined using the Syntax ``x..y`` or ``x..=y`` where the first one means
 everything from x to y - 1 and the other one includes y.
 
-Do note that ranges are only valid inside of ``for`` loops and ``switch`` statements,
+Ranges are only valid inside of ``for`` loops and ``switch`` statements,
 this is likely going to change in the future.
 
 Generic Types
@@ -457,7 +457,7 @@ A type may be made generic by giving the ``type`` declaration parameters:
     let c = { 10 } !Container(int)
 
 You may accept a generic type as a parameter by either referring to the whole name
-or by using ``type`` parameters to accept any polymorphic type. Do note that a function
+or by using ``type`` parameters to accept any polymorphic type. A function
 like this is also made polymorphic:
 
 .. code-block:: princess
