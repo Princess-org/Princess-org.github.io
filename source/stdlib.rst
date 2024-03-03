@@ -7,7 +7,7 @@ Types
 ^^^^^
 .. code-block:: princess
 
-    type File = *cstd::s__iobuf
+    type File = *cstd::s__IO_FILE
 .. code-block:: princess
 
     type UnixTime = uint64
@@ -16,7 +16,7 @@ Variables
 ^^^^^^^^^
 .. code-block:: princess
 
-    const PATH_MAX: int = 260
+    const PATH_MAX: int = 4096
 .. code-block:: princess
 
     const MAX_UINT8: uint8 = 255
@@ -275,15 +275,15 @@ Functions
 
 .. code-block:: princess
 
-    def filetime_to_unix(ft: windows::s__FILETIME) -> UnixTime
+    def read_remaining(file: File) -> Str
+
+.. code-block:: princess
+
+    def timespec_to_unix(ts: linux::s_timespec) -> UnixTime
 
 .. code-block:: princess
 
     def modified_time(file: File) -> UnixTime
-
-.. code-block:: princess
-
-    def created_time(file: File) -> UnixTime
 
 .. code-block:: princess
 
@@ -327,137 +327,69 @@ Types
 ^^^^^
 .. code-block:: princess
 
-    type ValueKind = enum {
-        STRING
-        ARRAY
-        BOOLEAN
-    }
-.. code-block:: princess
-
-    type Value = struct {
-        next: &Value
-        kind: ValueKind
-    }
-.. code-block:: princess
-
     type Option = struct {
-        shortop: char
-        longop: String
+        kind: OptionKind
+        data: 
+        longop: Str
         nargs: int
-        repeat: bool
-        default: &Value
+        shortop: char
         is_set: bool
-        value: &Value
-        help: String
-        metavar: String
+        is_required: bool
+        help: Str
+        metavar: Str
     }
 .. code-block:: princess
 
     type OptionParser = struct {
-        options: [Option]
-        description: String
+        options: &[Option]
+        description: Str
     }
 
 Functions
 ^^^^^^^^^
 .. code-block:: princess
 
-    def destruct(value: *Value)
-.. code-block:: princess
-
-    def option_repeat(shortop: char, longop: String) -> Option
+    def option(data: *&[Str], longop: Str, nargs: int) -> Option
 
 .. code-block:: princess
 
-    def option_repeat(shortop: char, longop: String, nargs: int) -> Option
+    def option(data: *bool, longop: Str) -> Option
 
 .. code-block:: princess
 
-    def option_repeat(shortop: char, longop: String, default: [String]) -> Option
+    def option(data: *Str, longop: Str) -> Option
 
 .. code-block:: princess
 
-    def option_repeat(shortop: char, longop: String, nargs: int, default: [[String]]) -> Option
+    def option(data: *&Vector(Str), longop: Str) -> Option
 
 .. code-block:: princess
 
-    def option_repeat(longop: String) -> Option
+    def option(data: *&Vector(&[Str]), longop: Str, nargs: int) -> Option
 
 .. code-block:: princess
 
-    def option_repeat(longop: String, nargs: int) -> Option
+    def set_required(option: Option) -> Option
 
 .. code-block:: princess
 
-    def option_repeat(longop: String, default: [String]) -> Option
+    def set_shortop(option: Option, shortop: char) -> Option
 
 .. code-block:: princess
 
-    def option_repeat(longop: String, nargs: int, default: [[String]]) -> Option
+    def set_help(option: Option, help: Str) -> Option
 
 .. code-block:: princess
 
-    def option(shortop: char, longop: String, nargs: int, default: [String]) -> Option
+    def set_metavar(option: Option, metavar: Str) -> Option
 
 .. code-block:: princess
 
-    def option(shortop: char, longop: String, default: bool) -> Option
+    def make_parser(options: &[Option], description: Str) -> &OptionParser
 
 .. code-block:: princess
 
-    def option(shortop: char, longop: String, default: String) -> Option
-
-.. code-block:: princess
-
-    def option(shortop: char, longop: String, nargs: int) -> Option
-
-.. code-block:: princess
-
-    def option(shortop: char, longop: String) -> Option
-
-.. code-block:: princess
-
-    def option(longop: String, nargs: int, default: [String]) -> Option
-
-.. code-block:: princess
-
-    def option(longop: String, default: bool) -> Option
-
-.. code-block:: princess
-
-    def option(longop: String, default: String) -> Option
-
-.. code-block:: princess
-
-    def option(longop: String, nargs: int) -> Option
-
-.. code-block:: princess
-
-    def option(longop: String) -> Option
-
-.. code-block:: princess
-
-    def set_help(option: Option, help: String) -> Option
-
-.. code-block:: princess
-
-    def set_metavar(option: Option, metavar: String) -> Option
-
-.. code-block:: princess
-
-    def make_parser(options: [Option], description: String) -> OptionParser
-
-.. code-block:: princess
-
-    def get_value(parser: *OptionParser, name: String) -> &Value
-
-.. code-block:: princess
-
-    def get_value_as_vec(parser: *OptionParser, name: String) -> &Vector(&Value)
-
-.. code-block:: princess
-
-    def parse(option_parser: *OptionParser, args: [string]) -> bool
+    def parse(option_parser: &OptionParser, args: [string]) -> bool
 
 
 io
@@ -467,10 +399,16 @@ Variables
 ^^^^^^^^^
 .. code-block:: princess
 
-    var stderr_orig: *s__iobuf = ...
+    var stderr_orig: *s__IO_FILE = ...
 .. code-block:: princess
 
-    var stdout_orig: *s__iobuf = ...
+    var stdout_orig: *s__IO_FILE = ...
+.. code-block:: princess
+
+    const NO_BLOCKING: int = 1
+.. code-block:: princess
+
+    const _IONBF: int = 2
 
 Functions
 ^^^^^^^^^
@@ -488,7 +426,7 @@ Functions
     def restore_stdout()
 .. code-block:: princess
 
-    def pipe() -> File, File
+    def pipe(mode: int) -> File, File
 
 .. code-block:: princess
 
@@ -584,16 +522,16 @@ Functions
     def push(tree: &Json, item: String)
 .. code-block:: princess
 
-    def set_item(tree: &Json, key: String, item: &Json)
+    def update(tree: &Json, key: String, item: &Json)
 .. code-block:: princess
 
-    def set_item(tree: &Json, key: String, item: double)
+    def update(tree: &Json, key: String, item: double)
 .. code-block:: princess
 
-    def set_item(tree: &Json, key: String, item: bool)
+    def update(tree: &Json, key: String, item: bool)
 .. code-block:: princess
 
-    def set_item(tree: &Json, key: String, item: String)
+    def update(tree: &Json, key: String, item: String)
 .. code-block:: princess
 
     def length(tree: &Json) -> size_t
@@ -604,7 +542,7 @@ Functions
 
 .. code-block:: princess
 
-    def get_item(tree: &Json, str: String) -> &Json
+    def apply(tree: &Json, str: String) -> &Json
 
 .. code-block:: princess
 
@@ -612,7 +550,7 @@ Functions
 
 .. code-block:: princess
 
-    def get_item(tree: &Json, index: size_t) -> &Json
+    def apply(tree: &Json, index: size_t) -> &Json
 
 .. code-block:: princess
 
@@ -738,7 +676,7 @@ Functions
 
 .. code-block:: princess
 
-    def get_item(map: &Map(type K, type V), key: K) -> V
+    def apply(map: &Map(type K, type V), key: K) -> V
 
 .. code-block:: princess
 
@@ -746,7 +684,10 @@ Functions
 
 .. code-block:: princess
 
-    def set_item(map: &Map(type K, type V), key: K, value: V)
+    def update(map: &Map(type K, type V), key: K, value: V)
+.. code-block:: princess
+
+    def put_all(this: &Map(type K, type V), other: &Map(K, V))
 .. code-block:: princess
 
     def remove(map: &Map(type K, type V), key: K)
@@ -807,8 +748,8 @@ Types
     type Process = struct {
         exit_code: int
         running: bool
-        si: windows::s__STARTUPINFOA
-        pi: windows::s__PROCESS_INFORMATION
+        pid: int
+        fd: long
     }
 
 Functions
@@ -820,6 +761,9 @@ Functions
 .. code-block:: princess
 
     def wait(process: *Process, timeout: ulong)
+.. code-block:: princess
+
+    def terminate(process: *Process)
 .. code-block:: princess
 
     def dispose(process: *Process)
@@ -848,10 +792,26 @@ Functions
 
 .. code-block:: princess
 
+    def make(vec: &Vector(type T)) -> &Set(T)
+
+.. code-block:: princess
+
+    def __eq__(a: &Set(type T), b: &Set(T)) -> bool
+
+.. code-block:: princess
+
+    def __ne__(a: &Set(type T), b: &Set(T)) -> bool
+
+.. code-block:: princess
+
     def add(set: &Set(type T), value: T)
 .. code-block:: princess
 
     def add_all(set: &Set(type T), other: &Set(T))
+.. code-block:: princess
+
+    def copy(set: &Set(type T)) -> &Set(T)
+
 
 shared
 ~~~~~~
@@ -923,7 +883,7 @@ Types
 
     type IString = interface {
         def length() -> size_t
-        def get_item(i: size_t) -> char
+        def apply(i: size_t) -> char
     }
 .. code-block:: princess
 
@@ -946,7 +906,7 @@ Functions
 
 .. code-block:: princess
 
-    def get_item(s: &[char], i: size_t) -> char
+    def apply(s: &[char], i: size_t) -> char
 
 .. code-block:: princess
 
@@ -990,11 +950,11 @@ Functions
 
 .. code-block:: princess
 
-    def get_item(s: Str, i: size_t) -> char
+    def apply(s: Str, i: size_t) -> char
 
 .. code-block:: princess
 
-    def get_item(s: &Str, i: size_t) -> char
+    def apply(s: &Str, i: size_t) -> char
 
 .. code-block:: princess
 
@@ -1116,11 +1076,11 @@ Functions
 
 .. code-block:: princess
 
-    def get_item(s: StringSlice, i: size_t) -> char
+    def apply(s: StringSlice, i: size_t) -> char
 
 .. code-block:: princess
 
-    def get_item(s: &StringSlice, i: size_t) -> char
+    def apply(s: &StringSlice, i: size_t) -> char
 
 .. code-block:: princess
 
@@ -1165,6 +1125,26 @@ Functions
 .. code-block:: princess
 
     def __ne__(s1: Str, s2: Str) -> bool
+
+.. code-block:: princess
+
+    def cmp(s1: IString, s2: IString) -> int
+
+.. code-block:: princess
+
+    def __lt__(s1: IString, s2: IString) -> bool
+
+.. code-block:: princess
+
+    def __le__(s1: IString, s2: IString) -> bool
+
+.. code-block:: princess
+
+    def __gt__(s1: IString, s2: IString) -> bool
+
+.. code-block:: princess
+
+    def __ge__(s1: IString, s2: IString) -> bool
 
 .. code-block:: princess
 
@@ -1352,11 +1332,11 @@ Functions
 
 .. code-block:: princess
 
-    def get_item(vec: &Vector(type T), index: size_t) -> T
+    def apply(vec: &Vector(type T), index: size_t) -> T
 
 .. code-block:: princess
 
-    def set_item(vec: &Vector(type T), index: size_t, val: T)
+    def update(vec: &Vector(type T), index: size_t, val: T)
 .. code-block:: princess
 
     def push(vec: &Vector(type T), elem: T)
@@ -1393,6 +1373,9 @@ Functions
 .. code-block:: princess
 
     def insert(vec: &Vector(type T), index: size_t, vec2: &Vector(T))
+.. code-block:: princess
+
+    def add_all(vec: &Vector(type T), vec2: &Vector(T))
 .. code-block:: princess
 
     def remove(vec: &Vector(type T), index: size_t)
@@ -1448,6 +1431,8 @@ Types
         OPAQUE
         WEAK_REF
         TYPE
+        VARIANT
+        TUPLE
     }
 .. code-block:: princess
 

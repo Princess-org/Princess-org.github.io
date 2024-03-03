@@ -114,7 +114,7 @@ is useful to avoid heap allocations.
     assert slc == "Some"
 
     def first_character(s: String) -> char {
-        return s[0]
+        return s(0)
     }
 
     assert first_character(my_string) == 'S'
@@ -136,7 +136,7 @@ If you want your type to be convertable to ``String``, simply implement the inte
             " age: " + employee.age
     }
 
-    let employee = { name = "Bob", age = 35 } !&Employee
+    let employee = [ name = "Bob", age = 35 ] !&Employee
 
     var hello: StringBuffer = "Hello "
     hello += employee + "!"
@@ -191,10 +191,11 @@ You can create instances of structs by using a cast like this:
     
     type MyStruct { a: int; b: double }
 
-    let s = { a = 10, b = 10.5 } !MyStruct
-    let s2 = { 10, 10.5 } !MyStruct
+    let s = [ a = 10, b = 10.5 ] !MyStruct
 
-The rules are essentially the same as for a function call.
+You can leave out elements and they will be zero-initialized.
+Unlike functions calls, every attribute needs to be assigned by name.
+You can get around this for your own data types by defining your own constructor function.
 
 Enum types
 ~~~~~~~~~~
@@ -280,7 +281,7 @@ References may also have no type, in this case use `&` to create a void referenc
     }
 
     // This gets automatically cleaned up
-    let a = { 10 } !&A
+    let a = [ a = 10 ] !&A
 
 .. _interfaces:
 
@@ -314,7 +315,7 @@ similar to concepts in C++.
         print(a.as_str(), "\n")
     }
 
-    let a = { "Foo" } !A
+    let a = [ name = "Foo" ] !A
     let b = 20
 
     print(a)
@@ -351,8 +352,8 @@ it decides which concrete function to call.
         return 20
     }
 
-    let a = {} !&A
-    let b = {} !&B
+    let a = [] !&A
+    let b = [] !&B
 
     var c: &I = a
     assert c.foo() == 10
@@ -395,22 +396,55 @@ allocation and do *not* have to be freed.
     // Do not call delete on this!
 
     let b: [int] = zero_allocate(int, 10)
-    b[0] = 10
-    b[5] = 20
+    b(0) = 10
+    b(0) = 20
 
     print(b, "\n")
     // This needs to be freed!
     delete(b)
 
+Arrays are accessed using the function call syntax. Assignments are also done that way:
+
+.. code-block:: princess
+
+    var a = [1, 2, 3 ,4]
+    a(0) = 10
+    print(a(0), a(1))
+
+You can define these on custom types using the functions ``apply`` and ``update``:
+
+.. code-block:: princess
+
+    type Vector3 = struct { data: [3; int] }
+
+    export def vec3(x: int, y: int, z: int) -> &Vector3 {
+        return [ data = [x, y, z] ] !Vector3
+    }
+
+    export def apply(v: &Vector3, index: size_t) -> int {
+        assert index < 3
+        return v.data(index)
+    }
+
+    export def update(v: &Vector3, index: size_t, value: int) {
+        assert index < 3
+        v.data(index) = value
+    }
+    
+    // Make our vector here
+    let v = vec3(10, 20, 30)
+    v(0) = 2
+    print(v(0), v(1), v(2), "\n")
+
 Function types
 ~~~~~~~~~~~~~~
 
 You can take the address of any function with ``*``. The type of plain functions looks like this:
-``def (A, B) -> (C, D)``. This function takes types A and B as arguments and returns C and D.
+``def [A, B] -> [C, D]``. This function takes types A and B as arguments and returns C and D.
 You can leave out the parenthesis if it is one type or drop them entirely if there's no type.
 
 There is a second function type, the closure type, which is the same just without the def:
-``(A, B) -> (C, D)``. This is the type that closures have. Dot not use the address operator to refer
+``[A, B] -> [C, D]``. This is the type that closures have. Dot not use the address operator to refer
 to these, just using the function name is right.
 
 Because you can also assign normal functions to closure types, 
@@ -443,6 +477,23 @@ everything from x to y - 1 and the other one includes y.
 Ranges are only valid inside of ``for`` loops and ``switch`` statements,
 this is likely going to change in the future.
 
+Tuples
+~~~~~~
+
+Tuple types are defined using the Syntax ``[A, B, C]``. You can create a new tuple similar
+to an array with array sytnax: ``let x: [int, double] = [10, 20.0]``.
+You can assign a static array to a tuple and the other way around, provided that they are compatible.
+So say ``[3; int] <-> [int, int, int]``.
+
+You may destructure a tuple similar to the return value of a function that returns multiple values.
+
+.. code-block:: princess
+    let x = [1, 2.5, 4]
+    let a, b, c = x
+
+In fact, if you define a function that returns a tuple, it is literally the same as returning multiple values.
+In the future, only the tuple syntax may be accepted so keep that in mind.
+
 Generic Types
 ~~~~~~~~~~~~~
 
@@ -454,7 +505,7 @@ A type may be made generic by giving the ``type`` declaration parameters:
     	v: T
     }
 
-    let c = { 10 } !Container(int)
+    let c = [ v = 10 ] !Container(int)
 
 You may accept a generic type as a parameter by either referring to the whole name
 or by using ``type`` parameters to accept any polymorphic type. A function

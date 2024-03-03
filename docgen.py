@@ -40,7 +40,7 @@ def download_compiler():
     process.wait()
 
 def generate_json():
-    process = subprocess.Popen([f"{PATH}/bin/princess", "--typed-ast", "--emit-only-functions", "--no-incremental", "./docall.pr"], stdout = subprocess.PIPE)
+    process = subprocess.Popen([f"{PATH}/bin/princess", "--typed-ast", "--emit-only-functions", "--emit-all-modules", "--no-incremental", "./docall.pr"], stdout = subprocess.PIPE)
     out, err = process.communicate()
     if process.returncode != 0:
         print("Couldn't create documentation!", file = sys.stderr)

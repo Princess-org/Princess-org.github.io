@@ -127,9 +127,9 @@ which is called when none of the other cases match.
 
     var i = 20
     switch i {
-        case 10, 20: print("Good number")
-        case 20..40: print("Bad number")
-        case: print("I don't know about this")
+        case 10, 20; print("Good number")
+        case 20..40; print("Bad number")
+        case; print("I don't know about this")
     }
 
 Loops
@@ -238,7 +238,7 @@ it is going to search for an implicit function that is imported into the current
         return a.s
     }
 
-    let a = { "Hello" } !A
+    let a = [ s = "Hello" ] !A
     let b: Str = a // implicit call here
 
 Just like variables, ``#extern`` may be used on a function, this does exactly the same thing.
@@ -305,7 +305,7 @@ specific type like so:
 .. code-block:: princess
 
     def my_function(type A) -> A {
-        return {} !A
+        return [] !A
     }
 
 This essentially means, that a type is provided to the function at compile time. So multiple
@@ -376,7 +376,7 @@ identifier.
     Compound assignment, <<=  , ``def __ilshift__``
     Compound assignment, &=   , ``def __iand__``
     Compound assignment, \|=  , ``def __ior__``
-    Compound assignment, ^=   , ``def __ixor_-``
+    Compound assignment, ^=   , ``def __ixor__``
 
 Tests
 ~~~~~
@@ -392,9 +392,9 @@ The env parameter essentially looks like this and is defined in runtime.pr:
 .. code-block:: princess
 
     export type TestEnvironment = struct {
-        out: def () -> &string
-        err: def () -> &string
-        assertion_handler: def (bool, *char) -> ()
+        out: def [] -> &string
+        err: def [] -> &string
+        assertion_handler: def [bool, *char] -> []
     }
 
 Out and err return the captured standard output and standard error, so that the
@@ -450,7 +450,7 @@ Closures
 ~~~~~~~~
 
 Functions defined inside of other functions are basically closures.
-They have the type ``(A, B) -> (C, D)``.
+They have the type ``[A, B] -> [C, D]``.
 
 A closure has access to the variables of the outer function but only
 as copies. It is possible however to refer to the addresses of variables

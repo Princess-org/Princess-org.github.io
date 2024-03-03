@@ -6,8 +6,8 @@ Github or check out the repository and build it yourself.
 
 Currentl llvm-13 is required for the compiler to run.
 It is expected to find the compiler on the path, so you need
-to hook it up like that. On Windows it calls ``clang`` and on
-linux ``clang-13``. Make sure that it is supplied via the PATH.
+to hook it up like that. It tries to call ``clang`` so make sure that
+clang is supplied via the path.
 
 There is currently no build for the VSCode extension available as
 it is in very early stages of development. If you want to use it, you can
@@ -54,6 +54,7 @@ arguments supplied.
 
 .. warning:: 
     Do note that the default mode of the compiler is incremental compilation.
-    This can speed up compilation significantly for big projects, but it might 
-    fails sometimes. If the compiler segfaults, try compiling with \--no-incremental first
+    This could speed up compilation significantly for big projects.
+    As of right now the incremental compilation is basically unusable.
+    If the compiler segfaults, try compiling with \--no-incremental first
     before submitting a bug report.

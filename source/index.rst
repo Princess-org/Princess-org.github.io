@@ -54,7 +54,7 @@ Features
       return person.name + ": " + person.age
    }
 
-   let person = { name = "Bob", age = 42 } !Person
+   let person = [ name = "Bob", age = 42 ] !Person
    print(person, "\n")
 
    // Compile time parameter type T
