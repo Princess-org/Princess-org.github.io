@@ -15,7 +15,7 @@ lexers["princess"] = PrincessLexer(startinline = True)
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'Princess'
-copyright = '2023, Vic Nightfall'
+copyright = '2024, Vic Nightfall'
 author = 'Vic Nightfall'
 release = '0.1'
 
