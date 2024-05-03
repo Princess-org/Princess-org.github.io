@@ -520,7 +520,7 @@ as the only argument.
     def make_my_struct(a: int) {
         let ptr = allocate(int)
         @ptr = a
-        return { ptr } !MyStruct
+        return [ ptr ] !MyStruct
     } -> MyStruct
 
     export def construct(
