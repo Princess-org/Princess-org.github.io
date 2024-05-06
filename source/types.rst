@@ -258,7 +258,7 @@ In order to create a reference to a type, simply cast it to a reference of the s
 This will copy the data and create a valid reference. Note however that creating a
 constructor function which does this is standard practice.
 
-For situations where a reference cycle might be created, use ``weak_ref(T)`` in order
+For situations where a reference cycle might be created, use ``weak &T`` in order
 to break the cycle. In the future there might be a garbage collector which deals with
 those cases.
 

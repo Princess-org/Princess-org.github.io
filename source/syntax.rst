@@ -14,7 +14,7 @@ Keywords as defined by the language are the following:
     yield, const, do, word, unsigned, enum, 
     size_of, offset_of, import, defined, type_of,
     align_of, as, loop, this, and, or, not,
-    defer, is, weak_ref, implicit
+    defer, is, weak, implicit
 
 These may not be used as identifier names.
 
