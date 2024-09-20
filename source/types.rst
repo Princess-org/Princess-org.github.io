@@ -189,7 +189,7 @@ You can create instances of structs by using a cast like this:
 
 .. code-block:: princess
     
-    type MyStruct { a: int; b: double }
+    type MyStruct = struct { a: int; b: double }
 
     let s = [ a = 10, b = 10.5 ] !MyStruct
 
@@ -326,7 +326,7 @@ similar to concepts in C++.
     // 20
 
 In this case, no operation is performed at runtime, instead the polymorphic function print gets
-compiled into two separate instances, one accepting ``ìnt`` and the other one accepting ``A``.
+compiled into two separate instances, one accepting ``int`` and the other one accepting ``A``.
 
 The second ways to use interfaces is to use a reference of that interface. This allows for dynamic
 dispatch. The way this is implemented is essentially using the fact that references have a 
