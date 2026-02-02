@@ -288,7 +288,7 @@ References may also have no type, in this case use `&` to create a void referenc
 Interfaces
 ~~~~~~~~~~
 
-Interfaces are basically contracts for which menthods need to be defined on a Type in order
+Interfaces are basically contracts for which methods need to be defined on a Type in order
 to be able to use it in place of that interface.
 
 There are essentially two ways to use interfaces. One is to use the bare interface. This is
