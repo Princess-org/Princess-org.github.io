@@ -10,13 +10,16 @@ Types
     type File = *cstd::s__IO_FILE
 .. code-block:: princess
 
+    type Dir = *linux::s___dirstream
+.. code-block:: princess
+
     type UnixTime = uint64
 
 Variables
 ^^^^^^^^^
 .. code-block:: princess
 
-    const PATH_MAX: int = 4096
+    const PATH_MAX: int32 = 4096
 .. code-block:: princess
 
     const MAX_UINT8: uint8 = 255
@@ -55,13 +58,13 @@ Variables
     const MAX_INT64: int64 = 9223372036854775808
 .. code-block:: princess
 
-    const SEEK_SET: int = 0
+    const SEEK_SET: int32 = 0
 .. code-block:: princess
 
-    const SEEK_CUR: int = 1
+    const SEEK_CUR: int32 = 1
 .. code-block:: princess
 
-    const SEEK_END: int = 2
+    const SEEK_END: int32 = 2
 
 Functions
 ^^^^^^^^^
@@ -79,6 +82,10 @@ Functions
 
 .. code-block:: princess
 
+    def c_error_str() -> Str
+
+.. code-block:: princess
+
     def combine_hashes(hashes: uint64) -> uint64
 
 .. code-block:: princess
@@ -91,23 +98,7 @@ Functions
 
 .. code-block:: princess
 
-    def print(args: ) -> int
-
-.. code-block:: princess
-
-    def error(args: ) -> int
-
-.. code-block:: princess
-
-    def fprint(file: File, args: ) -> int
-
-.. code-block:: princess
-
-    def fprint(file: File, str: Str) -> int
-
-.. code-block:: princess
-
-    def abort(s: String)
+    def abort(s: Str)
 .. code-block:: princess
 
     def delete(v: type *T)
@@ -123,7 +114,7 @@ Functions
     def concat(base: string, to_append: string)
 .. code-block:: princess
 
-    def allocate(size: size_t) -> 
+    def allocate(size: size_t) -> *
 
 .. code-block:: princess
 
@@ -135,7 +126,7 @@ Functions
 
 .. code-block:: princess
 
-    def zero_allocate(size: size_t) -> 
+    def zero_allocate(size: size_t) -> *
 
 .. code-block:: princess
 
@@ -179,6 +170,10 @@ Functions
 .. code-block:: princess
 
     def read(file: File, ptr: type *T) -> size_t
+
+.. code-block:: princess
+
+    def read(file: File, type T) -> T
 
 .. code-block:: princess
 
@@ -232,7 +227,7 @@ Functions
 
 .. code-block:: princess
 
-    def memcopy(src: , dest: , size: size_t) -> 
+    def memcopy(src: *, dest: *, size: size_t) -> *
 
 .. code-block:: princess
 
@@ -314,7 +309,7 @@ Functions
 
 .. code-block:: princess
 
-    def allocate(arena: &Arena, size: size_t) -> 
+    def allocate(arena: &Arena, size: size_t) -> *
 
 .. code-block:: princess
 
@@ -329,7 +324,7 @@ Types
 
     type Option = struct {
         kind: OptionKind
-        data: 
+        data: *
         longop: Str
         nargs: int
         shortop: char
@@ -395,6 +390,14 @@ Functions
 io
 ~~
 
+Types
+^^^^^
+.. code-block:: princess
+
+    type ByteStream = struct {
+        _data: &Vector(byte)
+    }
+
 Variables
 ^^^^^^^^^
 .. code-block:: princess
@@ -405,13 +408,28 @@ Variables
     var stdout_orig: *s__IO_FILE = ...
 .. code-block:: princess
 
-    const NO_BLOCKING: int = 1
+    const NO_BLOCKING: int32 = 1
 .. code-block:: princess
 
-    const _IONBF: int = 2
+    const _IONBF: int32 = 2
 
 Functions
 ^^^^^^^^^
+.. code-block:: princess
+
+    def make_stream() -> &ByteStream
+
+.. code-block:: princess
+
+    def write(this: &ByteStream, data: type T)
+.. code-block:: princess
+
+    def write_zt(this: &ByteStream, s: Str) -> size_t
+
+.. code-block:: princess
+
+    def data(this: &ByteStream) -> [byte]
+
 .. code-block:: princess
 
     def redirect_stderr_to_file(file: String)
@@ -431,6 +449,10 @@ Functions
 .. code-block:: princess
 
     def is_a_tty(file: File) -> bool
+
+.. code-block:: princess
+
+    def open_memory_as_file(arr: [uint8], mode: string) -> File
 
 
 json
@@ -622,17 +644,14 @@ Types
     type Entry(type K, type V) = struct {
         key: K
         value: V
-        next: &Entry(K, V)
-        l_prev: weak &Entry(K, V)
-        l_next: weak &Entry(K, V)
     }
 .. code-block:: princess
 
     type Map(type K, type V) = struct {
         size: size_t
-        entries: [&Entry(K, V)]
-        tail: weak &Entry(K, V)
-        head: weak &Entry(K, V)
+        entries: [&InternalEntry(K, V)]
+        tail: weak &&InternalEntry(K, V)
+        head: weak &&InternalEntry(K, V)
     }
 .. code-block:: princess
 
@@ -706,6 +725,10 @@ Functions
 .. code-block:: princess
 
     def clear(map: &Map(type K, type V))
+.. code-block:: princess
+
+    def iterate(map: &Map(type K, type V)) -> Entry(K, V)
+
 
 optional
 ~~~~~~~~
@@ -775,7 +798,7 @@ Types
 ^^^^^
 .. code-block:: princess
 
-    type Set(type T) = map::Map(T, )
+    type Set(type T) = map::Map(T, *)
 .. code-block:: princess
 
     type SSet = Set(Str)
@@ -829,13 +852,13 @@ Types
     type Symbol = struct {
         kind: SymbolKind
         name: Str
-        value: 
+        value: *
     }
 .. code-block:: princess
 
     type Library = struct {
         path: Str
-        handle: 
+        handle: *
         symbols: &[Symbol]
     }
 
@@ -870,6 +893,7 @@ Types
         prev: &StringBuffer
         data: Str
         offset: size_t
+        blocked: bool
     }
 .. code-block:: princess
 
@@ -882,7 +906,7 @@ Types
 .. code-block:: princess
 
     type IString = interface {
-        def length() -> size_t
+        def length -> size_t
         def apply(i: size_t) -> char
     }
 .. code-block:: princess
@@ -891,7 +915,7 @@ Types
 .. code-block:: princess
 
     type ToString = interface {
-        def to_string() -> String
+        def to_string -> String
     }
 
 Functions
@@ -964,6 +988,10 @@ Functions
     def destruct(this: *Str)
 .. code-block:: princess
 
+    def destruct(this: *StringBuffer) -> bool
+
+.. code-block:: princess
+
     def length(s: StringBuffer) -> size_t
 
 .. code-block:: princess
@@ -1000,6 +1028,10 @@ Functions
 
 .. code-block:: princess
 
+    def __add__(s: StringBuffer, o: char) -> StringBuffer
+
+.. code-block:: princess
+
     def __add__(s: StringBuffer, o: StringSlice) -> StringBuffer
 
 .. code-block:: princess
@@ -1029,6 +1061,10 @@ Functions
 .. code-block:: princess
 
     def __iadd__(s: StringBuffer, o: Str) -> StringBuffer
+
+.. code-block:: princess
+
+    def __iadd__(s: StringBuffer, o: char) -> StringBuffer
 
 .. code-block:: princess
 
@@ -1108,6 +1144,10 @@ Functions
 
 .. code-block:: princess
 
+    def __eq__(s1: StringSlice, s2: StringSlice) -> bool
+
+.. code-block:: princess
+
     def __ne__(s1: IString, s2: IString) -> bool
 
 .. code-block:: princess
@@ -1128,6 +1168,10 @@ Functions
 
 .. code-block:: princess
 
+    def __ne__(s1: StringSlice, s2: StringSlice) -> bool
+
+.. code-block:: princess
+
     def cmp(s1: IString, s2: IString) -> int
 
 .. code-block:: princess
@@ -1145,6 +1189,10 @@ Functions
 .. code-block:: princess
 
     def __ge__(s1: IString, s2: IString) -> bool
+
+.. code-block:: princess
+
+    def make_slice(s: *char, offset: size_t) -> StringSlice
 
 .. code-block:: princess
 
@@ -1284,6 +1332,10 @@ Functions
 
 .. code-block:: princess
 
+    def split(input: String, separator: char) -> &[Str]
+
+.. code-block:: princess
+
     def utf8_encode(code_point: uint64) -> Str
 
 .. code-block:: princess
@@ -1399,6 +1451,27 @@ Types
 ^^^^^
 .. code-block:: princess
 
+    type Type = struct {
+        id: int64
+        destructor: (*) -> ()
+        constructor: (*, *) -> ()
+        reflection_type: &
+    }
+.. code-block:: princess
+
+    type Refcount = struct {
+        strong_cnt: int64
+        weak_cnt: int64
+    }
+.. code-block:: princess
+
+    type Ref = struct {
+        ref_count: *Refcount
+        value: *
+        tpe: *Type
+    }
+.. code-block:: princess
+
     type TestEnvironment = struct {
         out: () -> (&string)
         err: () -> (&string)
@@ -1408,79 +1481,9 @@ Types
 
     type Generator(type T) = struct {
         implementation: (&Generator(T)) -> (optional::Optional(T))
-        context: 
-        free_context: () -> ()
+        context: *
+        free_context: (*) -> ()
         is_at_end: bool
-    }
-.. code-block:: princess
-
-    type TypeKind = enum {
-        BOOL
-        WORD
-        FLOAT
-        STRUCT
-        UNION
-        ARRAY
-        STATIC_ARRAY
-        POINTER
-        REFERENCE
-        FUNCTION
-        ENUM
-        CHAR
-        STRUCTURAL
-        OPAQUE
-        WEAK_REF
-        TYPE
-        VARIANT
-        TUPLE
-    }
-.. code-block:: princess
-
-    type Function = struct {
-        name: string
-        exported: bool
-        module: string
-        parameter_t: [*Type]
-        return_t: [*Type]
-    }
-.. code-block:: princess
-
-    type Type = struct {
-        kind: TypeKind
-        name: string
-        unsig: bool
-        length: size_t
-        tpe: *Type
-        size: size_t
-        align: size_t
-        fields: [Field]
-        parameters: [*Type]
-        returns: [*Type]
-        enum_values: [EnumValue]
-        module: string
-        structural_members: [Function]
-        type_members: [Function]
-        id: int64
-    }
-.. code-block:: princess
-
-    type EnumValue = struct {
-        name: string
-        value: int64
-    }
-.. code-block:: princess
-
-    type Field = struct {
-        name: string
-        offset: size_t
-        tpe: *Type
-    }
-.. code-block:: princess
-
-    type Ref = struct {
-        ref_count: *int64
-        value: 
-        tpe: *Type
     }
 
 Functions
@@ -1492,20 +1495,231 @@ Functions
 
     def next(generator: &Generator(type T)) -> optional::Optional(T)
 
+
+reflection
+~~~~~~~~~~
+
+Types
+^^^^^
 .. code-block:: princess
 
-    def implements(A: *Type, B: *Type) -> bool
+    type Type = &interface {
+        def name -> StringSlice
+        def module -> StringSlice
+        def id -> uint64
+        def size -> size_t
+        def align -> size_t
+        def implements -> &Set(weak &Type)
+    }
+.. code-block:: princess
+
+    type TypeT = &struct {
+        BaseType
+        size: size_t
+        align: size_t
+    }
+.. code-block:: princess
+
+    type OpaqueT = &struct {
+        BaseType
+        size: size_t
+        align: size_t
+    }
+.. code-block:: princess
+
+    type BoolT = &struct {
+        BaseType
+        size: size_t
+        align: size_t
+    }
+.. code-block:: princess
+
+    type FloatT = &struct {
+        BaseType
+        size: size_t
+        align: size_t
+    }
+.. code-block:: princess
+
+    type WordT = &struct {
+        BaseType
+        signed: bool
+        size: size_t
+        align: size_t
+    }
+.. code-block:: princess
+
+    type CharT = &struct {
+        BaseType
+        size: size_t
+        align: size_t
+    }
+.. code-block:: princess
+
+    type BoxType = struct {
+        BaseType
+        tpe: weak &Type
+    }
+.. code-block:: princess
+
+    type PointerT = &struct {
+        BoxType
+        size: size_t
+        align: size_t
+    }
+.. code-block:: princess
+
+    type ReferenceT = &struct {
+        BoxType
+        size: size_t
+        align: size_t
+    }
+.. code-block:: princess
+
+    type WeakReferenceT = &struct {
+        BoxType
+        size: size_t
+        align: size_t
+    }
+.. code-block:: princess
+
+    type ArrayT = &struct {
+        BoxType
+        size: size_t
+        align: size_t
+    }
+.. code-block:: princess
+
+    type StaticArrayT = &struct {
+        BoxType
+        size: size_t
+        align: size_t
+        length: size_t
+    }
+.. code-block:: princess
+
+    type FunctionT = &struct {
+        FunctionBase
+        size: size_t
+        align: size_t
+    }
+.. code-block:: princess
+
+    type ClosureT = &struct {
+        FunctionBase
+        size: size_t
+        align: size_t
+    }
+.. code-block:: princess
+
+    type RecordT = struct {
+        BaseType
+        size: size_t
+        align: size_t
+        members: &[Field]
+    }
+.. code-block:: princess
+
+    type Field = struct {
+        name: StringSlice
+        offset: size_t
+        tpe: weak &Type
+    }
+.. code-block:: princess
+
+    type StructT = &struct {
+        RecordT
+    }
+.. code-block:: princess
+
+    type UnionT = &struct {
+        RecordT
+    }
+.. code-block:: princess
+
+    type EnumValue = struct {
+        name: StringSlice
+        value: int64
+    }
+.. code-block:: princess
+
+    type EnumT = &struct {
+        BaseType
+        signed: bool
+        size: size_t
+        align: size_t
+        values: &[EnumValue]
+    }
+.. code-block:: princess
+
+    type Function = struct {
+        name: StringSlice
+        exported: bool
+        module: StringSlice
+        arguments: &[weak &Type]
+        returns: &[weak &Type]
+    }
+.. code-block:: princess
+
+    type InterfaceT = &struct {
+        BaseType
+        size: size_t
+        align: size_t
+        functions: &[Function]
+        implementors: &Set(weak &Type)
+    }
+.. code-block:: princess
+
+    type VariantT = &struct {
+        BaseType
+        size: size_t
+        align: size_t
+        variants: &[weak &Type]
+    }
+.. code-block:: princess
+
+    type TupleT = &struct {
+        BaseType
+        size: size_t
+        align: size_t
+        elements: &[weak &Type]
+    }
+.. code-block:: princess
+
+    type TypeConstructorT = &struct {
+        BaseType
+        size: size_t
+        align: size_t
+    }
+
+Functions
+^^^^^^^^^
+.. code-block:: princess
+
+    def implements(a: Type, b: Type) -> bool
 
 .. code-block:: princess
 
-    def ref_type(a: Ref) -> *Type
+    def assignable(a: Type, b: Type) -> bool
 
 .. code-block:: princess
 
-    def equals(a: *Type, b: *Type) -> bool
+    def contains(a: StructT, b: Type) -> bool
 
 .. code-block:: princess
 
-    def reference(tpe: *Type) -> *Type
+    def __eq__(a: Type, b: Type) -> bool
+
+.. code-block:: princess
+
+    def __ne__(a: Type, b: Type) -> bool
+
+.. code-block:: princess
+
+    def hash(a: Type) -> uint64
+
+.. code-block:: princess
+
+    def type_id(id: uint64) -> Type
 
 

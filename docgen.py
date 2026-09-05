@@ -23,7 +23,8 @@ DOCS = [
     "shared",
     "strings",
     "vector",
-    "runtime"
+    "runtime",
+    "reflection"
 ]
 
 def download_source():
@@ -60,7 +61,10 @@ def type_to_str(value):
         body = ""
         for member in value["body"]:
             if member["kind"] == "IdDeclStruct":
-                body += ident_to_str(member["ident"]) + ": " + type_to_str(member["tpe"]) + "\n"
+                if member.get("is_embed", False):
+                    body += type_to_str(member["tpe"]) + "\n"
+                else: 
+                    body += ident_to_str(member["ident"]) + ": " + type_to_str(member["tpe"]) + "\n"
             elif member["kind"] == "Struct":
                 body += type_to_str(member) + "\n"
         ret += textwrap.indent(body, "    ")
@@ -70,12 +74,12 @@ def type_to_str(value):
         if value["tpe"]:
             tpe = type_to_str(value["tpe"])
         else: tpe = None
-        return "*" + tpe if tpe else ""
+        return "*" + (tpe if tpe else "")
     elif value["kind"] == "RefT":
         if value["tpe"]:
             tpe = type_to_str(value["tpe"])
         else: tpe = None
-        return "&" + tpe if tpe else ""
+        return "&" + (tpe if tpe else "")
     elif value["kind"] == "WeakRefT":
         if value["tpe"]:
             tpe = type_to_str(value["tpe"])
@@ -108,7 +112,9 @@ def type_to_str(value):
         body = ""
         for member in value["body"]:
             body += "def " + ident_to_str(member["name"])
-            body += "(" + ", ".join(map(lambda par: ident_to_str(par["name"]) + ": " + type_to_str(par["tpe"]), member["params"])) + ")"
+            params = member["params"]
+            if params:
+                body += "(" + ", ".join(map(lambda par: ident_to_str(par["name"]) + ": " + type_to_str(par["tpe"]), member["params"])) + ")"
             if member["returns"]:
                 body += " -> "
                 body += ", ".join(map(type_to_str, member["returns"]))
