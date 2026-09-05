@@ -488,6 +488,7 @@ So say ``[3; int] <-> [int, int, int]``.
 You may destructure a tuple similar to the return value of a function that returns multiple values.
 
 .. code-block:: princess
+    
     let x = [1, 2.5, 4]
     let a, b, c = x
 
